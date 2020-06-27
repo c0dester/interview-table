@@ -1,7 +1,10 @@
 import React from 'react';
+import 'styled-components/macro';
 
-import './Table.scss';
+const styles = `
+  color: red;
+`;
 
-const Table = ({ text }: { text: string }) => <div>{text}</div>;
+const Table = ({ text }: { text: string }) => <div css={styles}>{text}</div>;
 
 export default Table;
