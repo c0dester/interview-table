@@ -30,7 +30,6 @@ const createRowRenderer = (data: TableDataType) => ({ id }: HeaderType) => (
 
 const Table: FunctionComponent<TablePropsType> = ({ headers, data, width }) => (
   <div css={createWrapperStyles(width)}>
-    {console.log(width)}
     <table css={createTableStyles(calculateTableWidth(headers))}>
       <thead>
         <tr>{headers.map(renderHeadCell)}</tr>
