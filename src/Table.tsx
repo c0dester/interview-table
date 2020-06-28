@@ -32,10 +32,10 @@ const createRowRenderer = (headers: HeadersType, shouldStickLastColumn: boolean)
   },
   idx: number
 ) => (
-  <tr css={rowStyles}>
-    {headers.map(({ width, accessor }) => (
+  <tr key={idx} css={rowStyles}>
+    {headers.map(({ width, accessor }, headerIdx: number) => (
       <td
-        key={idx}
+        key={headerIdx}
         css={createCellStyles(width, shouldStickLastColumn, idx)}
         title={entity[accessor]}
       >
