@@ -1,11 +1,9 @@
 export interface HeaderType {
-  id: string;
+  accessor: string;
   name: string;
   width: number;
 }
 
 export type HeadersType = Array<HeaderType>;
 
-export interface TableDataType {
-  [headerName: string]: Array<string>;
-}
+export type TableDataType = Array<{ [accessor: string]: string }>;

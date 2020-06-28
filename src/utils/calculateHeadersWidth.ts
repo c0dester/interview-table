@@ -1,4 +1,6 @@
 import { HeadersType } from '../types';
 
-export default (headers: HeadersType): number =>
+const calculateHeadersWidth = (headers: HeadersType): number =>
   headers.reduce((totalWidth, { width }) => totalWidth + (width || 0), 0);
+
+export default calculateHeadersWidth;

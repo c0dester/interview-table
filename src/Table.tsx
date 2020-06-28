@@ -1,42 +1,73 @@
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, useRef } from 'react';
 import 'styled-components/macro';
 
-import calculateTableWidth from './utils/calculateTableWidth';
+import { calculateHeadersWidth, useTableWidth } from './utils';
 import { HeadersType, HeaderType, TableDataType } from './types';
 import {
   createWrapperStyles,
+  createScrollerStyles,
   createTableStyles,
   createHeadCellStyles,
   rowStyles,
-  cellStyles,
+  createCellStyles,
 } from './styles';
 
 type TablePropsType = {
   headers: HeadersType;
   data: TableDataType;
-  width?: number;
+  maxWidth: number;
 };
 
-const renderHeadCell = ({ name, width }: HeaderType) => (
-  <th css={createHeadCellStyles(width)}>{name}</th>
+const createHeadCellRenderer = (shouldStickLastColumn: boolean) => (
+  { name, width }: HeaderType,
+  idx: number
+) => (
+  <th key={idx} css={createHeadCellStyles(width, shouldStickLastColumn)}>
+    {name}
+  </th>
 );
-const createRowRenderer = (data: TableDataType) => ({ id }: HeaderType) => (
+const createRowRenderer = (headers: HeadersType, shouldStickLastColumn: boolean) => (
+  entity: {
+    [accessor: string]: string;
+  },
+  idx: number
+) => (
   <tr css={rowStyles}>
-    {data[id].map((cell: string) => (
-      <td css={cellStyles}>{cell}</td>
+    {headers.map(({ width, accessor }) => (
+      <td
+        key={idx}
+        css={createCellStyles(width, shouldStickLastColumn, idx)}
+        title={entity[accessor]}
+      >
+        {entity[accessor]}
+      </td>
     ))}
   </tr>
 );
 
-const Table: FunctionComponent<TablePropsType> = ({ headers, data, width }) => (
-  <div css={createWrapperStyles(width)}>
-    <table css={createTableStyles(calculateTableWidth(headers))}>
-      <thead>
-        <tr>{headers.map(renderHeadCell)}</tr>
-      </thead>
-      <tbody>{headers.map(createRowRenderer(data))}</tbody>
-    </table>
-  </div>
-);
+const Table: FunctionComponent<TablePropsType> = ({ headers, data, maxWidth }) => {
+  const wrapperRef = useRef(null);
+  const [wrapperWidth] = useTableWidth(wrapperRef, !Boolean(maxWidth));
+  const resolvedWrapperWidth = maxWidth || wrapperWidth;
+  const headersWidth = calculateHeadersWidth(headers);
+  const isTableWiderThanWrapper = headersWidth > resolvedWrapperWidth;
+  const lastColumnWidth = headers[headers.length - 1].width;
+  const tableWidth = isTableWiderThanWrapper ? headersWidth - lastColumnWidth : headersWidth;
+  const scrollerWidth = isTableWiderThanWrapper
+    ? resolvedWrapperWidth - lastColumnWidth
+    : resolvedWrapperWidth;
+  return (
+    <div css={createWrapperStyles(maxWidth)} ref={wrapperRef}>
+      <div css={createScrollerStyles(scrollerWidth)}>
+        <table css={createTableStyles(tableWidth)}>
+          <thead>
+            <tr>{headers.map(createHeadCellRenderer(isTableWiderThanWrapper))}</tr>
+          </thead>
+          <tbody>{data.map(createRowRenderer(headers, isTableWiderThanWrapper))}</tbody>
+        </table>
+      </div>
+    </div>
+  );
+};
 
 export default Table;

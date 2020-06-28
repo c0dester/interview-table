@@ -13,31 +13,57 @@ export default {
 const tableDataGroupId = 'Table Data';
 const defaultHeaders: HeadersType = [
   {
-    id: 'column1',
-    name: 'Column 1',
+    accessor: 'firstName',
+    name: 'Imię',
     width: 100,
   },
   {
-    id: 'column2',
-    name: 'Column 2 longer',
-    width: 200,
+    accessor: 'lastName',
+    name: 'Nazwisko',
+    width: 120,
   },
   {
-    id: 'column3',
-    name: 'Col 3',
-    width: 50,
+    accessor: 'profession',
+    name: 'Zawód',
+    width: 100,
+  },
+  {
+    accessor: 'address',
+    name: 'Adres',
+    width: 250,
   },
 ];
 
-const defaultData: TableDataType = {
-  column1: ['val 1', 'val 2', 'val 3'],
-  column2: ['val 1', 'val 2', 'val 3'],
-  column3: ['val 1', 'val 2', 'val 3'],
-};
+const defaultData: TableDataType = [
+  {
+    firstName: 'Jan',
+    lastName: 'Kowalski',
+    profession: 'Piekarz',
+    address: 'ul. Szeroka 22 99-999 Warszawa',
+  },
+  {
+    firstName: 'Mateusz',
+    lastName: 'Nowak',
+    profession: 'Stolarz',
+    address: 'ul. Długa 1 99-999 Warszawa',
+  },
+  {
+    firstName: 'Marian',
+    lastName: 'Polak',
+    profession: 'Dekarz',
+    address: 'ul. Wąska 9 99-999 Warszawa',
+  },
+  {
+    firstName: 'Anna',
+    lastName: 'Kowalska',
+    profession: 'Szwaczka',
+    address: 'ul. Wysoka 11B/2, 99-999 Warszawa, woj. mazowieckie',
+  },
+];
 
 export const table = () => {
   const headersKnob = object('Headers', defaultHeaders, tableDataGroupId);
   const dataKnob = object('Data', defaultData, tableDataGroupId);
-  const widthKnob = number('Width', 400, {}, 'Dimensions');
-  return <Table width={widthKnob} headers={headersKnob} data={dataKnob} />;
+  const maxWidthKnob = number('Max Width', 500, {}, 'Dimensions');
+  return <Table maxWidth={maxWidthKnob} headers={headersKnob} data={dataKnob} />;
 };
