@@ -40,6 +40,7 @@
     "@storybook/preset-create-react-app": "^3.1.2",
     "@storybook/react": "^5.3.19",
     "eslint-plugin-prettier": "^3.1.4",
+    "faker": "^4.1.0",
     "husky": "^4.2.5",
     "prettier": "^2.0.5",
     "pretty-quick": "^2.0.1",

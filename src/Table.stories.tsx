@@ -1,5 +1,6 @@
 import React from 'react';
 import { withKnobs, object, number } from '@storybook/addon-knobs';
+import faker from 'faker';
 
 import Table from './Table';
 import { HeadersType, TableDataType } from './types';
@@ -14,56 +15,36 @@ const tableDataGroupId = 'Table Data';
 const defaultHeaders: HeadersType = [
   {
     accessor: 'firstName',
-    name: 'Imię',
+    name: 'First Name',
     width: 100,
   },
   {
     accessor: 'lastName',
-    name: 'Nazwisko',
+    name: 'Last Name',
     width: 120,
   },
   {
-    accessor: 'profession',
-    name: 'Zawód',
-    width: 100,
+    accessor: 'email',
+    name: 'E-mail',
+    width: 220,
   },
   {
     accessor: 'address',
-    name: 'Adres',
+    name: 'Address',
     width: 250,
   },
 ];
 
-const defaultData: TableDataType = [
-  {
-    firstName: 'Jan',
-    lastName: 'Kowalski',
-    profession: 'Piekarz',
-    address: 'ul. Szeroka 22 99-999 Warszawa',
-  },
-  {
-    firstName: 'Mateusz',
-    lastName: 'Nowak',
-    profession: 'Stolarz',
-    address: 'ul. Długa 1 99-999 Warszawa',
-  },
-  {
-    firstName: 'Marian',
-    lastName: 'Polak',
-    profession: 'Dekarz',
-    address: 'ul. Wąska 9 99-999 Warszawa',
-  },
-  {
-    firstName: 'Anna',
-    lastName: 'Kowalska',
-    profession: 'Szwaczka',
-    address: 'ul. Wysoka 11B/2, 99-999 Warszawa, woj. mazowieckie',
-  },
-];
+const defaultData: TableDataType = new Array(10).fill(null).map(() => ({
+  firstName: faker.name.firstName(),
+  lastName: faker.name.lastName(),
+  email: faker.internet.email(),
+  address: faker.fake('{{address.streetAddress}}, {{address.city}} {{address.zipCode}}'),
+}));
 
 export const table = () => {
   const headersKnob = object('Headers', defaultHeaders, tableDataGroupId);
   const dataKnob = object('Data', defaultData, tableDataGroupId);
-  const maxWidthKnob = number('Max Width', 500, {}, 'Dimensions');
+  const maxWidthKnob = number('Max Width', 550, {}, 'Dimensions');
   return <Table maxWidth={maxWidthKnob} headers={headersKnob} data={dataKnob} />;
 };

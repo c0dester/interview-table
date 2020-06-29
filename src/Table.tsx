@@ -2,7 +2,7 @@ import React, { FunctionComponent, useRef } from 'react';
 import 'styled-components/macro';
 
 import { calculateHeadersWidth, useTableWidth } from './utils';
-import { HeadersType, HeaderType, TableDataType } from './types';
+import { HeadersType, HeaderType, TableDataType, DataEntityType } from './types';
 import {
   createWrapperStyles,
   createScrollerStyles,
@@ -12,17 +12,17 @@ import {
   createCellStyles,
 } from './styles';
 
-type TablePropsType = {
+interface TablePropsType {
   headers: HeadersType;
   data: TableDataType;
   maxWidth: number;
-};
+}
 
-const createHeadCellRenderer = (shouldStickLastColumn: boolean) => (
+const createHeadCellRenderer = (shouldStickLastColumn: boolean, lastIndex: number) => (
   { name, width }: HeaderType,
   idx: number
 ) => (
-  <th key={idx} css={createHeadCellStyles(width, shouldStickLastColumn)}>
+  <th key={idx} css={createHeadCellStyles(width, shouldStickLastColumn && idx === lastIndex)}>
     {name}
   </th>
 );
@@ -32,17 +32,21 @@ const createRowRenderer = (headers: HeadersType, shouldStickLastColumn: boolean)
   },
   idx: number
 ) => (
-  <tr key={idx} css={rowStyles}>
+  <div css={rowStyles} key={idx}>
     {headers.map(({ width, accessor }, headerIdx: number) => (
-      <td
+      <div
         key={headerIdx}
-        css={createCellStyles(width, shouldStickLastColumn, idx)}
+        css={createCellStyles(
+          width,
+          shouldStickLastColumn && headerIdx === headers.length - 1,
+          idx
+        )}
         title={entity[accessor]}
       >
         {entity[accessor]}
-      </td>
+      </div>
     ))}
-  </tr>
+  </div>
 );
 
 const Table: FunctionComponent<TablePropsType> = ({ headers, data, maxWidth }) => {
@@ -56,15 +60,16 @@ const Table: FunctionComponent<TablePropsType> = ({ headers, data, maxWidth }) =
   const scrollerWidth = isTableWiderThanWrapper
     ? resolvedWrapperWidth - lastColumnWidth
     : resolvedWrapperWidth;
+
   return (
     <div css={createWrapperStyles(maxWidth)} ref={wrapperRef}>
       <div css={createScrollerStyles(scrollerWidth)}>
-        <table css={createTableStyles(tableWidth)}>
-          <thead>
-            <tr>{headers.map(createHeadCellRenderer(isTableWiderThanWrapper))}</tr>
-          </thead>
-          <tbody>{data.map(createRowRenderer(headers, isTableWiderThanWrapper))}</tbody>
-        </table>
+        <div css={createTableStyles(tableWidth)}>
+          <div css={rowStyles}>
+            {headers.map(createHeadCellRenderer(isTableWiderThanWrapper, headers.length - 1))}
+          </div>
+          {data.map(createRowRenderer(headers, isTableWiderThanWrapper))}
+        </div>
       </div>
     </div>
   );

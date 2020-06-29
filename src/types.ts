@@ -6,4 +6,6 @@ export interface HeaderType {
 
 export type HeadersType = Array<HeaderType>;
 
-export type TableDataType = Array<{ [accessor: string]: string }>;
+export type DataEntityType = { [accessor: string]: string };
+
+export type TableDataType = Array<DataEntityType>;
