@@ -7,7 +7,8 @@ interface BodyCellPropsType {
   width: number;
   isLast: boolean;
   idx: number;
-  shouldAnimate: boolean;
+  shouldAnimate: boolean | null;
+  children: string;
 }
 
 const BodyCell: FunctionComponent<BodyCellPropsType> = ({
@@ -17,7 +18,7 @@ const BodyCell: FunctionComponent<BodyCellPropsType> = ({
   children,
   shouldAnimate,
 }) => (
-  <StyledRoot width={width} isLast={isLast} idx={idx}>
+  <StyledRoot width={width} isLast={isLast} idx={idx} title={children}>
     <AnimatedText shouldAnimate={shouldAnimate} idx={idx}>
       {children}
     </AnimatedText>

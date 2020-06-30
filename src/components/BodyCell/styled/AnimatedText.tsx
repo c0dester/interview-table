@@ -2,7 +2,7 @@ import styled, { keyframes, css } from 'styled-components';
 
 interface AnimatedTextPropsType {
   idx: number;
-  shouldAnimate: boolean;
+  shouldAnimate: boolean | null;
 }
 
 const fadeIn = keyframes`

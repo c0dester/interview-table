@@ -2,7 +2,7 @@ import React, { FunctionComponent, useRef, useState } from 'react';
 import 'styled-components/macro';
 
 import { calculateHeadersWidth, useTableWidth, sortData } from './utils';
-import { HeadersType, TableDataType } from './types';
+import { HeadersType, TableDataType, ArrowTurn } from './types';
 import { rowStyles } from './styles';
 
 import HeadCell from './components/HeadCell';
@@ -29,9 +29,10 @@ const Table: FunctionComponent<TablePropsType> = ({ headers, data, maxWidth }) =
     sortBy: null,
   });
   const [wasSorted, setWasSorted] = useState<boolean | null>(null);
-  const dataSorted = sortType && sortBy ? sortData(sortType, data, sortBy) : data;
   const wrapperRef = useRef(null);
   const [wrapperWidth] = useTableWidth(wrapperRef, !Boolean(maxWidth));
+
+  const dataSorted = sortType && sortBy ? sortData(sortType, data, sortBy) : data;
   const resolvedWrapperWidth = maxWidth || wrapperWidth;
   const headersWidth = calculateHeadersWidth(headers);
   const isTableWiderThanWrapper = headersWidth > resolvedWrapperWidth;
@@ -40,6 +41,7 @@ const Table: FunctionComponent<TablePropsType> = ({ headers, data, maxWidth }) =
   const scrollerWidth = isTableWiderThanWrapper
     ? resolvedWrapperWidth - lastColumnWidth
     : resolvedWrapperWidth;
+
   const onHeadCellClick = (headName: string) => {
     setWasSorted(false);
     let nextSortType: TableStateType['sortType'] = 'asc';
@@ -57,11 +59,23 @@ const Table: FunctionComponent<TablePropsType> = ({ headers, data, maxWidth }) =
       }
     }
     const nextSortBy = nextSortType === null ? null : headName;
-    setTimeout(() => setWasSorted(true), 0);
     setState({ sortType: nextSortType, sortBy: nextSortBy });
+    setTimeout(() => setWasSorted(true), 50);
+  };
+  const getArrowTurn = (headName: string): ArrowTurn => {
+    if (sortBy !== headName) {
+      return;
+    }
+    let headCellArrowTurn: ArrowTurn;
+    if (sortType === 'asc') {
+      headCellArrowTurn = 'up';
+    } else if (sortType === 'desc') {
+      headCellArrowTurn = 'down';
+    }
+    return headCellArrowTurn;
   };
   return (
-    <StyledTableWrapper maxWidth={maxWidth}>
+    <StyledTableWrapper ref={wrapperRef} maxWidth={maxWidth}>
       <StyledTableScroller width={scrollerWidth}>
         <StyledTable width={tableWidth}>
           <div css={rowStyles}>
@@ -71,6 +85,7 @@ const Table: FunctionComponent<TablePropsType> = ({ headers, data, maxWidth }) =
                 width={width}
                 isLast={isTableWiderThanWrapper && idx === headers.length - 1}
                 onClick={() => onHeadCellClick(accessor)}
+                arrowTurn={getArrowTurn(accessor)}
               >
                 {name}
               </HeadCell>
