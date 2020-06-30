@@ -24,7 +24,7 @@ interface TableStateType {
 }
 
 const Table: FunctionComponent<TablePropsType> = ({ headers, data, maxWidth }) => {
-  const [{ sortType, sortBy }, setState] = useState<TableStateType>({
+  const [{ sortType, sortBy }, setSortState] = useState<TableStateType>({
     sortType: null,
     sortBy: null,
   });
@@ -45,10 +45,6 @@ const Table: FunctionComponent<TablePropsType> = ({ headers, data, maxWidth }) =
   const headersWidth = calculateHeadersWidth(headers);
   const isTableWiderThanWrapper = headersWidth > resolvedWrapperWidth;
   const lastColumnWidth = headers[headers.length - 1].width;
-  const tableWidth = isTableWiderThanWrapper ? headersWidth - lastColumnWidth : headersWidth;
-  const scrollerWidth = isTableWiderThanWrapper
-    ? resolvedWrapperWidth - lastColumnWidth
-    : resolvedWrapperWidth;
 
   const onHeadCellClick = (headName: string) => {
     setWasSorted(false);
@@ -67,7 +63,7 @@ const Table: FunctionComponent<TablePropsType> = ({ headers, data, maxWidth }) =
       }
     }
     const nextSortBy = nextSortType === null ? null : headName;
-    setState({ sortType: nextSortType, sortBy: nextSortBy });
+    setSortState({ sortType: nextSortType, sortBy: nextSortBy });
     headerAnimationTimeoutId = setTimeout(() => setWasSorted(true), 50);
   };
   const getArrowTurn = (headName: string): ArrowTurn => {
@@ -84,8 +80,14 @@ const Table: FunctionComponent<TablePropsType> = ({ headers, data, maxWidth }) =
   };
   return (
     <StyledTableWrapper ref={wrapperRef} maxWidth={maxWidth}>
-      <StyledTableScroller width={scrollerWidth}>
-        <StyledTable width={tableWidth}>
+      <StyledTableScroller
+        width={
+          isTableWiderThanWrapper ? resolvedWrapperWidth - lastColumnWidth : resolvedWrapperWidth
+        }
+      >
+        <StyledTable
+          width={isTableWiderThanWrapper ? headersWidth - lastColumnWidth : headersWidth}
+        >
           <div css={rowStyles}>
             {headers.map(({ width, name, accessor }, idx: number) => (
               <HeadCell
