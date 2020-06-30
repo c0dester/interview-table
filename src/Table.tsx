@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useRef, useState } from 'react';
+import React, { FunctionComponent, useRef, useState, useEffect } from 'react';
 import 'styled-components/macro';
 
 import { calculateHeadersWidth, useTableWidth, sortData } from './utils';
@@ -30,6 +30,14 @@ const Table: FunctionComponent<TablePropsType> = ({ headers, data, maxWidth }) =
   });
   const [wasSorted, setWasSorted] = useState<boolean | null>(null);
   const wrapperRef = useRef(null);
+  let headerAnimationTimeoutId: number | undefined;
+  useEffect(() => {
+    return () => {
+      if (headerAnimationTimeoutId) {
+        clearTimeout(headerAnimationTimeoutId);
+      }
+    };
+  });
   const [wrapperWidth] = useTableWidth(wrapperRef, !Boolean(maxWidth));
 
   const dataSorted = sortType && sortBy ? sortData(sortType, data, sortBy) : data;
@@ -60,7 +68,7 @@ const Table: FunctionComponent<TablePropsType> = ({ headers, data, maxWidth }) =
     }
     const nextSortBy = nextSortType === null ? null : headName;
     setState({ sortType: nextSortType, sortBy: nextSortBy });
-    setTimeout(() => setWasSorted(true), 50);
+    headerAnimationTimeoutId = setTimeout(() => setWasSorted(true), 50);
   };
   const getArrowTurn = (headName: string): ArrowTurn => {
     if (sortBy !== headName) {
