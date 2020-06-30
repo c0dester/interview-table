@@ -1,11 +1,15 @@
 import { useState, useEffect, RefObject } from 'react';
 
 const useTableWidth = (tableRef: RefObject<HTMLElement>, shouldListen: boolean) => {
-  const [width, setWidth] = useState(0);
-  const element = tableRef.current;
+  const [width, setWidth] = useState<number | undefined>();
 
   useEffect(() => {
-    if (shouldListen) {
+    const element = tableRef.current;
+
+    if (shouldListen && element) {
+      if (width === undefined) {
+        setWidth(element.offsetWidth);
+      }
       const resizeListener = () => {
         if (element) {
           const currentWidth = element.offsetWidth;
@@ -21,7 +25,7 @@ const useTableWidth = (tableRef: RefObject<HTMLElement>, shouldListen: boolean) 
         window.removeEventListener('resize', resizeListener);
       };
     }
-  }, [element, width, shouldListen]);
+  }, [tableRef, width, shouldListen]);
 
   return [width];
 };

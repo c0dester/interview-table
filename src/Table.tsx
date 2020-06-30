@@ -15,7 +15,7 @@ import StyledTable from './styled/Table';
 interface TablePropsType {
   headers: HeadersType;
   data: TableDataType;
-  maxWidth: number;
+  maxWidth?: number;
 }
 
 interface TableStateType {
@@ -33,7 +33,7 @@ const Table: FunctionComponent<TablePropsType> = ({ headers, data, maxWidth }) =
   const [wrapperWidth] = useTableWidth(wrapperRef, !Boolean(maxWidth));
 
   const dataSorted = sortType && sortBy ? sortData(sortType, data, sortBy) : data;
-  const resolvedWrapperWidth = maxWidth || wrapperWidth;
+  const resolvedWrapperWidth = maxWidth || wrapperWidth || 0;
   const headersWidth = calculateHeadersWidth(headers);
   const isTableWiderThanWrapper = headersWidth > resolvedWrapperWidth;
   const lastColumnWidth = headers[headers.length - 1].width;

@@ -8,7 +8,7 @@ interface StyledRootPropsType {
 
 const lastCellMixin = css<StyledRootPropsType>`
   position: absolute;
-  right: 0px;
+  right: 1px;
   width: ${({ width }) => `${width}px`};
   border-right: 0.5px solid #c9c5c5;
   background-color: ${({ idx }) => (idx % 2 === 1 ? '#dadee6' : '#fff')};

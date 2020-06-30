@@ -7,7 +7,7 @@ interface StyledRootPropsType {
 
 const lastCellMixin = css<StyledRootPropsType>`
   position: absolute;
-  right: 0;
+  right: 1px;
   flex: initial;
   width: ${({ width }) => `${width}px`};
 `;

@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 interface StyledTableWrapperPropsType {
-  maxWidth: number;
+  maxWidth?: number;
 }
 
 const StyledTableWrapper = styled.div<StyledTableWrapperPropsType>`
